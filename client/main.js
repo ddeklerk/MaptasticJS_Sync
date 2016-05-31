@@ -4,61 +4,63 @@ import { Meteor } from 'meteor/meteor';
 import { upsert } from '../imports/api/mapping/methods.js';
 import '../client/functions/sync.js';
 
-function doStuff() {
-  const mapping = Mapping.findOne();
+window.mapping = Mapping;
 
-  function myChangeHandler() {
-    const layouts = element.getLayout();
-    layouts.forEach(layout => {
-      upsert.call(layout);
-      console.log(layout.id);
-    });
-    }
-
-  const configObject = {
-    autoSave: true,
-    autoLoad: true,
+function newMT(id) {
+  return new Maptastic({
+    autoLoad: false,
+    autoSave: false,
     labels: true,
-    layers: ["mt","mt2","mt3","mt4"],
-    onchange: _.debounce(myChangeHandler, 500),
-  };
-
-  const element = Maptastic(configObject);
-  const layouts = element.getLayout();
-
-  if (mapping) {
-    element.setLayout([{
-      id: layouts[0].id,
-      sourcePoints: layouts[0].sourcePoints,
-      targetPoints: mapping.targetPoints,
-    }]);
-  } else {
-    layouts.forEach(layout => {
-      upsert.call(layout);
-    });
-  }
-
-  Mapping.find().observeChanges({
-    changed: (changedId, fields) => {
-      const layouts = element.getLayout();
-      console.log(changedId );
-      console.log(layouts);
-      const { id, sourcePoints } = layouts[0];
-      const { targetPoints } = fields;
-      element.setLayout([{
-        id,
-        sourcePoints,
-        targetPoints,
-      }]);
-      console.log(id + ", S:" + sourcePoints + ", T: " + targetPoints);
-    },
+    layers: [id],
+    onchange: _.debounce(myChangeHandler.bind(null, id), 500),
   });
 }
 
-Meteor.startup(() => {
-  const sub = Meteor.subscribe('mapping', {
-    onReady: () => {
-      doStuff();
+const maptasticObjects = {
+  mt1: newMT('mt1'),
+  mt2: newMT('mt2'),
+  mt3: newMT('mt3'),
+  mt4: newMT('mt4'),
+};
+
+function myChangeHandler(id) {
+  const layouts = maptasticObjects[id].getLayout();
+
+  layouts.forEach(layout => {
+    upsert.call(layout);
+  });
+}
+
+Meteor.subscribe('mapping', () => {
+  _.forEach(maptasticObjects, (object, id) => {
+    const mapping = Mapping.findOne({ id });
+
+    if (mapping) {
+      object.setLayout([{
+        id,
+        sourcePoints: object.getLayout()[0].sourcePoints,
+        targetPoints: mapping.targetPoints,
+      }]);
+    } else {
+      upsert.call(object.getLayout()[0]);
     }
   });
+});
+
+Mapping.find().observeChanges({
+  changed: (changedId, fields) => {
+    const { id } = Mapping.findOne(changedId);
+
+    const { targetPoints } = fields;
+
+    const object = maptasticObjects[id];
+
+    const sourcePoints = object.getLayout()[0].sourcePoints;
+
+    object.setLayout([{
+      id,
+      sourcePoints,
+      targetPoints,
+    }]);
+  },
 });
