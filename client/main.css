@@ -1,1 +1,13 @@
-/* CSS declarations go here */
+*,
+*:after,
+*:before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: black;
+  color: white;
+  font-family: sans-serif;
+}

@@ -1,22 +1,64 @@
-import { Template } from 'meteor/templating';
-import { ReactiveVar } from 'meteor/reactive-var';
+import _ from 'lodash';
+import { Mapping } from '../imports/api/mapping/mapping.js';
+import { Meteor } from 'meteor/meteor';
+import { upsert } from '../imports/api/mapping/methods.js';
+import '../client/functions/sync.js';
 
-import './main.html';
+function doStuff() {
+  const mapping = Mapping.findOne();
 
-Template.hello.onCreated(function helloOnCreated() {
-  // counter starts at 0
-  this.counter = new ReactiveVar(0);
-});
+  function myChangeHandler() {
+    const layouts = element.getLayout();
+    layouts.forEach(layout => {
+      upsert.call(layout);
+      console.log(layout.id);
+    });
+    }
 
-Template.hello.helpers({
-  counter() {
-    return Template.instance().counter.get();
-  },
-});
+  const configObject = {
+    autoSave: true,
+    autoLoad: true,
+    labels: true,
+    layers: ["mt","mt2","mt3","mt4"],
+    onchange: _.debounce(myChangeHandler, 500),
+  };
 
-Template.hello.events({
-  'click button'(event, instance) {
-    // increment the counter when button is clicked
-    instance.counter.set(instance.counter.get() + 1);
-  },
+  const element = Maptastic(configObject);
+  const layouts = element.getLayout();
+
+  if (mapping) {
+    element.setLayout([{
+      id: layouts[0].id,
+      sourcePoints: layouts[0].sourcePoints,
+      targetPoints: mapping.targetPoints,
+    }]);
+  } else {
+    layouts.forEach(layout => {
+      upsert.call(layout);
+    });
+  }
+
+  Mapping.find().observeChanges({
+    changed: (changedId, fields) => {
+      const layouts = element.getLayout();
+      console.log(changedId );
+      console.log(layouts);
+      const { id, sourcePoints } = layouts[0];
+      const { targetPoints } = fields;
+      element.setLayout([{
+        id,
+        sourcePoints,
+        targetPoints,
+      }]);
+      console.log(id + ", S:" + sourcePoints + ", T: " + targetPoints);
+    },
+  });
+}
+
+Meteor.startup(() => {
+  const sub = Meteor.subscribe('mapping', {
+    onReady: () => {
+      doStuff();
+    }
+  });
 });

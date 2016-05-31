@@ -3,23 +3,26 @@
 </head>
 
 <body>
-  <h1>Welcome to Meteor!</h1>
+    <!-- div id="mt" style="background: tomato; width: 100px; height: 100px"></div -->
 
-  {{> hello}}
-  {{> info}}
+    <div id="mt" style="overflow: hidden; height: 140.5px; width:250px;">
+        <video height="281" width="500" id="a" controls  style="margin-top: -140.5px"><source src="https://www.youtube.com/watch?v=E_c1lK9vyrs" type="video/mp4" /></video>
+        <!-- iframe src="https://www.youtube.com/embed/7ZHef-hAvOM" width="500" height="281" frameborder="0"></iframe -->
+    </div>
+    <div id="mt2" style="overflow: hidden; height: 140.5px; width:250px;">
+        <video height="281" width="500" id="b" style="margin-left: -250px"><source src="https://www.youtube.com/watch?v=E_c1lK9vyrs" type="video/mp4" /></video>
+        <!-- iframe src="https://www.youtube.com/embed/7ZHef-hAvOM" style="margin-left: -250px;" width="500" height="281" frameborder="0"></iframe -->
+    </div>
+    <div id="mt3" style="overflow: hidden; height: 140.5px; width:250px;">
+        <video height="281" width="500" id="c"><source src="https://www.youtube.com/watch?v=E_c1lK9vyrs" type="video/mp4" /></video>
+        <!-- iframe src="https://www.youtube.com/embed/7ZHef-hAvOM" style="margin-left: -250px;" width="500" height="281" frameborder="0"></iframe -->
+    </div>
+    <div id="mt4" style="overflow: hidden; height: 140.5px; width:250px;">
+        <video height="281" width="500" id="d" style="margin-left: -250px; margin-top: -140.5px"><source src="https://www.youtube.com/watch?v=E_c1lK9vyrs" type="video/mp4" /></video>
+        <!-- iframe src="https://www.youtube.com/embed/7ZHef-hAvOM" style="margin-left: -250px;" width="500" height="281" frameborder="0"></iframe -->
+    </div>
+
+    <!-- div id="mt2" style="background: orange; width: 500px; height: 281px"></div -->
+    <!-- div id="mt3" style="background: greenyellow; width: 100px; height: 100px"></div>
+    <div id="mt4" style="background: deepskyblue ; width: 100px; height: 100px"></div -->
 </body>
-
-<template name="hello">
-  <button>Click Me</button>
-  <p>You've pressed the button {{counter}} times.</p>
-</template>
-
-<template name="info">
-  <h2>Learn Meteor!</h2>
-  <ul>
-    <li><a href="https://www.meteor.com/try">Do the Tutorial</a></li>
-    <li><a href="http://guide.meteor.com">Follow the Guide</a></li>
-    <li><a href="https://docs.meteor.com">Read the Docs</a></li>
-    <li><a href="https://forums.meteor.com">Discussions</a></li>
-  </ul>
-</template>
