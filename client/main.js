@@ -22,8 +22,8 @@ function newMT(id) {
 const maptasticObjects = {
   mt1: newMT('mt1'),
   mt2: newMT('mt2'),
-  mt3: newMT('mt3'),
-  mt4: newMT('mt4'),
+  // mt3: newMT('mt3'),
+  // mt4: newMT('mt4'),
 };
 
 function myChangeHandler(id) {
