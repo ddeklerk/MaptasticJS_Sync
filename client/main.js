@@ -1,8 +1,11 @@
 import _ from 'lodash';
-import { Mapping } from '../imports/api/mapping/mapping.js';
+
 import { Meteor } from 'meteor/meteor';
+import { Mapping } from '../imports/api/mapping/mapping.js';
 import { upsert } from '../imports/api/mapping/methods.js';
+
 import '../client/functions/sync.js';
+import '../client/functions/yt_encode.js';
 
 window.mapping = Mapping;
 
