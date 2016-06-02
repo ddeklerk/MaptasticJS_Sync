@@ -1,5 +1,5 @@
-# MaptasticJS_Sync
-*EDITED*: glowbox maptasticjs
+# MaptasticJS
+*Original*: http://github.com/glowbox/maptasticjs
 
 Including:
 - Video sync (single client)
